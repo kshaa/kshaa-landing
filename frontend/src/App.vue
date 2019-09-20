@@ -32,7 +32,7 @@ export default class Home extends Vue {
 
   error?: string | null
 
-  static data() {
+  data() {
     return {
       loading: false,
       isAuthenticated: false,

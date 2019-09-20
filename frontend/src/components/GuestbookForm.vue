@@ -26,7 +26,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class GuestbookForm extends Vue {
   message?: string|null
 
-  static data() {
+  data() {
     return {
       message: null,
     };

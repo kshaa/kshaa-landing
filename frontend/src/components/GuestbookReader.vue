@@ -43,6 +43,7 @@ interface PageEntry {
   },
   ipAddress : string
   formattedCreatedAt : string
+  message : string
 }
 
 const uaParser = require('ua-parser-js');
@@ -59,11 +60,11 @@ export default class GuestbookReader extends Vue {
 
   error?: string | null
 
-  static data() {
+  data() {
     return {
       loading: false,
       error: null,
-      pageEntries: null,
+      pageEntries: [],
     };
   }
 
@@ -80,7 +81,7 @@ export default class GuestbookReader extends Vue {
 
   fetchData(this: GuestbookReader) {
     this.error = null;
-    this.pageEntries = null;
+    this.pageEntries = [];
     this.loading = true;
     Vue.axios.get('/api/guestbook/read').then((response: any) => {
       this.error = null;
@@ -112,6 +113,7 @@ export default class GuestbookReader extends Vue {
           parsedAgent,
           formattedCreatedAt,
           ipAddress: srcEntry.ipAddress,
+          message: srcEntry.message,
         };
 
         // Exclamation means "I know 'this.pageEntries' won't be null or undefined"
