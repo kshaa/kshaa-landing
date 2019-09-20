@@ -12,6 +12,12 @@ nix-instantiate --eval docker-compose.nix \
     > docker-compose.dev.yml
 ```
 
+or 
+
+```
+nix eval --raw -f docker-compose.dev.nix '' > docker-compose.dev.yml
+```
+
 ### Production docker-compose
 ```
 nix-instantiate --eval docker-compose.nix \
