@@ -1,0 +1,6 @@
+# Runtime database data
+/pgdata
+
+# Rendered docker compositions
+/docker-compose.*.yml
+/docker-compose.yml

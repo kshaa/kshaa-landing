@@ -1,0 +1,5 @@
+# Environmental configurations passed through direnv
+/.envrc
+
+# Node libraries
+/node_modules
