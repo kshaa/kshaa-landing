@@ -5,10 +5,12 @@ with lib;
 let
   projectCode = "landing";
   projectLabel = "VueJS Landing page";
-  dockerComposeFile = import ./docker-compose.nix {
+  projectFiles = (import ./project-files.nix {}).derivation;
+  dockerComposeFile = pkgs.writeText "landing.docker-compose.yml" (import ./docker-compose.nix {
+    NPM_INSTALL = true;
     SERVICE_PORT = cfg.port;
     EXTERNAL_URL = externalUrl;
-    POSTGRES_VOLUME_PATH = "${cfg.dataDir}/pgdata";
+    DATA_DIR = cfg.dataDir;
     VUE_COMPILE = true;
     APPLICATION_KEY = cfg.applicationKey;
     ADMIN_GITHUB_USER = cfg.githubAdminUser;
@@ -17,10 +19,11 @@ let
     POSTGRES_USER = cfg.postgresUser;
     POSTGRES_PASSWORD = cfg.postgresPassword;
     POSTGRES_DATABASE = cfg.postgresDatabase;
-  };
+    PROJECT_FILE_PATH = toString projectFiles;
+  });
 
   cfg = config.services."${projectCode}";
-  externalUrl = "${cfg.proxyProtocol}://${cfg.proxyHostname}:${cfg.proxyPort}";
+  externalUrl = "${cfg.proxyProtocol}://${cfg.proxyHostname}";
 in
 {
   # Options for the service
@@ -34,7 +37,6 @@ in
     # Network config
     proxyProtocol = mkOption { type = types.string; default = "http"; };
     proxyHostname = mkOption { type = types.string; default = "${projectCode}.local"; };
-    proxyPort = mkOption { type = types.int; default = 80; };
     port = mkOption { type = types.int; default = 3000; };
 
     # Application config

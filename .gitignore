@@ -1,5 +1,8 @@
-# Runtime database data
-/pgdata
+# Nix build
+/result
+
+# Runtime data
+/data
 
 # Rendered docker compositions
 /docker-compose.*.yml

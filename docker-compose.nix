@@ -4,6 +4,7 @@
 
     APPLICATION_KEY,
     SERVICE_PORT ? 8080,
+    DATA_DIR ? "./data",
     EXTERNAL_URL ? "http://localhost:${toString SERVICE_PORT}",
     ADMIN_GITHUB_USER ? null,
     GITHUB_CLIENT_ID ? null,
@@ -11,11 +12,15 @@
     POSTGRES_USER ? "landing",
     POSTGRES_PASSWORD ? "landing",
     POSTGRES_DATABASE ? "landing",
-    POSTGRES_VOLUME_PATH ? "./pgdata",
+    POSTGRES_VOLUME_PATH ? "${DATA_DIR}/db_data",
     BACKEND_DEBUG_MODE ? false,
     NGINX_DEBUG_MODE ? false,
     NGINX_CONFIG_PATH ? "./nginx.conf",
-    VUE_COMPILE ? false
+    NPM_INSTALL ? false,
+    VUE_COMPILE ? false,
+    BE_VOLUME_PATH ? "${DATA_DIR}/be_data",
+    FE_VOLUME_PATH ? "${DATA_DIR}/fe_data",
+    PROJECT_FILE_PATH ? "."
 }:
 let
     optionalString = pkgs.lib.optionalString;
@@ -28,45 +33,72 @@ services:
     image: nginx:latest
     ${if VUE_COMPILE then "
     volumes:
-      - ./nginx.compiledvue.conf:/etc/nginx/nginx.conf
-      - ./frontend:/var/www/public
+      - ${PROJECT_FILE_PATH}/nginx.compiledvue.conf:/etc/nginx/nginx.conf
+      - ${FE_VOLUME_PATH}:/var/www/public
     depends_on:
       - frontend
     " else "
     volumes:
-      - ./nginx.webpackdevserver.conf:/etc/nginx/nginx.conf
-      - ./frontend:/var/www/public
+      - ${PROJECT_FILE_PATH}/nginx.webpackdevserver.conf:/etc/nginx/nginx.conf
     "}
     ports:
     - 127.0.0.1:${toString SERVICE_PORT}:80
     ${optionalString NGINX_DEBUG_MODE "
-    command: [ nginx-debug, '-g', 'daemon off;' ]
+    command: 
+      - nginx-debug
+      - '-g'
+      - 'daemon off;'
     "}
   frontend:
     image: node:12.10.0-alpine
-    working_dir: /var/www
-    volumes:
-      - ./frontend:/var/www
     ${if VUE_COMPILE then "
+    working_dir: /var/www_rw
+    volumes:
+      # ${PROJECT_FILE_PATH}/frontend in production will be read-only
+      - ${PROJECT_FILE_PATH}/frontend:/var/www_ro
+      # '${FE_VOLUME_PATH}' in production will be read-write
+      - ${FE_VOLUME_PATH}:/var/www_rw
     command: 
       - /bin/sh
       - -c 
       - |
+        cp -a /var/www_ro/* /var/www_rw/
+        ${optionalString NPM_INSTALL "
+        npm install
+        "}
         npm run build
-    " else "
-    command: npm run serve
-    "}
     environment:
       - PORT=8080
+      - OUTPUT_DIR=/var/www_rw/dist
+    " else "
+    working_dir: /var/www_rw
+    volumes:
+      - ${PROJECT_FILE_PATH}/frontend:/var/www_ro
+      - ${FE_VOLUME_PATH}/frontend:/var/www_rw
+    command:
+      - sh
+      - -c
+      - |
+        cp -a /var/www_ro/* /var/www_rw/
+        npm run serve
+    environment:
+      - PORT=8080
+    "}
   backend:
     image: node:12.10.0-alpine
-    working_dir: /var/www
+    working_dir: /var/www_rw
     volumes:
-      - ./backend:/var/www
+      - ${PROJECT_FILE_PATH}/backend:/var/www_ro
+      - ${BE_VOLUME_PATH}:/var/www_rw
     command:
       - /bin/sh
       - -c 
       - |
+          cp -a /var/www_ro/* /var/www_rw/
+          ${optionalString NPM_INSTALL "
+          echo '(-/3) Installing NPM packages' && \
+          npm install
+          "}
           echo '(1/3) Creating database if needed' && \
           npx sequelize db:create || true && \
           echo '(2/3) Running database migrations if needed' && \

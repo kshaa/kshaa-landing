@@ -27,3 +27,9 @@ nix-instantiate --eval docker-compose.nix \
     | jq -r '.' \
     > docker-compose.prod.yml
 ```
+
+or 
+
+```
+nix eval --raw -f docker-compose.prod.nix '' > docker-compose.prod.yml
+```
