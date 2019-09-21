@@ -66,7 +66,12 @@ services:
         ${optionalString NPM_INSTALL "
         npm install
         "}
+        # Remove NPM cache which can cache builds
+        rm -rf ./node_modules/.cache/
         npm run build
+        echo \"The build is at '\$\${OUTPUT_DIR}'\"
+        ls \$\${OUTPUT_DIR}
+        ls \$\${OUTPUT_DIR}/js
     environment:
       - PORT=8080
       - OUTPUT_DIR=/var/www_rw/dist

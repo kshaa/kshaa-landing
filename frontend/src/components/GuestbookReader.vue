@@ -117,7 +117,7 @@ export default class GuestbookReader extends Vue {
         };
 
         // Exclamation means "I know 'this.pageEntries' won't be null or undefined"
-        this.pageEntries!.push(entry);
+        this.pageEntries.push(entry);
       });
     }).catch((e) => {
       if (e.response.status === 401) {

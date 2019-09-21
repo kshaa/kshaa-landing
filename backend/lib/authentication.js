@@ -12,8 +12,9 @@ function createPassport(config) {
   });
   
   passport.deserializeUser(async function(userId, done) {
-    let registeredUser = (await user.findByPk(userId)).get()
-    done(null, registeredUser);
+    let registeredUser = await user.findByPk(userId);
+    let registeredUserData = registeredUser ? registeredUser.get() : {};
+    done(null, registeredUserData);
   });
   
   /**

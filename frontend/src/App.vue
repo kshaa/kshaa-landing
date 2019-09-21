@@ -34,9 +34,9 @@ export default class Home extends Vue {
 
   data() {
     return {
-      loading: false,
-      isAuthenticated: false,
-      error: null,
+      loading: this.loading || false,
+      isAuthenticated: this.isAuthenticated || false,
+      error: this.error || null,
     };
   }
 
