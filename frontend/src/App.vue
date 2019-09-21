@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <div v-if="isAdmin" class="nav logged-in">
+    <div v-if="isAuthenticated" class="nav logged-in">
+      <router-link to="/"><FontAwesomeIcon icon="home" /></router-link>
+      <router-link to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
+      <a href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
+    </div>
+    <div v-else-if="isAdmin" class="nav logged-in">
       <router-link to="/"><FontAwesomeIcon icon="home" /></router-link>
       <router-link to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
       <a href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
