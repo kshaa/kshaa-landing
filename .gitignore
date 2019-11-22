@@ -3,7 +3,10 @@
 
 # Runtime data
 /data
+firebase.webapp.json
+firebase.serviceaccount.json
 
-# Rendered docker compositions
+# Docker environments
+/docker-compose.*.nix
 /docker-compose.*.yml
 /docker-compose.yml

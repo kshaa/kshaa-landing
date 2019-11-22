@@ -10,7 +10,7 @@ let
   inherit (import (builtins.fetchTarball "https://github.com/hercules-ci/gitignore/archive/master.tar.gz") { }) gitignoreSource;
 in rec {
   derivation = stdenv.mkDerivation {
-    src = gitignoreSource ./.;
+    src = gitignoreSource ./..;
     name = "kshaa-landing-app";
     description = "Kshaa landing project code";
     installPhase = ''

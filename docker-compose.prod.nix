@@ -1,9 +1,10 @@
-import ./docker-compose.nix {
+import ./ops/docker-compose.nix {
     APPLICATION_KEY = "abcdefg";
-    SERVICE_PORT = 8084; 
+    SERVICE_PORT = 8085; 
 
-    NPM_INSTALL = true;
+    BACKEND_NODEMON = false;
     VUE_COMPILE = true;
-    NGINX_DEBUG_MODE = true;
-    BACKEND_DEBUG_MODE = true;
+    NGINX_DEBUG_MODE = false;
+    BACKEND_DEBUG_MODE = false;
+    READ_ONLY_SOURCES_MODE = true;
 }
