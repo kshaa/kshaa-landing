@@ -7,6 +7,5 @@ firebase.webapp.json
 firebase.serviceaccount.json
 
 # Docker environments
-/docker-compose.*.nix
-/docker-compose.*.yml
-/docker-compose.yml
+/docker-compose.*
+!/docker-compose.*.sample
