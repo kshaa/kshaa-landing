@@ -36,10 +36,35 @@ app.use(userAgent);
 
 // Authentication middleware
 const passport = authentication.createPassport({
+    environmentName: process.env.NODE_ENV,
     externalURL: process.env.EXTERNAL_URL + apiPrefix,
     githubClientId: process.env.GITHUB_CLIENT_ID,
     githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-    githubCallbackPath: '/auth/github/callback'
+    githubCallbackPath: '/auth/github/callback',
+    githubAdminUser: process.env.ADMIN_GITHUB_USER
+});
+
+// # Local user
+router.post('/auth/local/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: apiPrefix + '/login?msg=Unexpected%20error'
+}));
+router.post('/auth/local/register', async (ctx, next) => {
+  const { username, password, email, name, surname } = ctx.request.body;
+  await authentication.registerUser(
+    username, password, email, name, surname
+  ).then(() => {
+    ctx.body = {
+      success: true
+    }
+  }).catch(error => {
+    ctx.body = {
+      success: false,
+      errorMessage: error.message
+    }  
+  });
+
+  return await next();
 });
 
 // # Github

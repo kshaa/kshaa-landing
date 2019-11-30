@@ -10,6 +10,8 @@
     "koa-session": "^5.12.3",
     "koa-useragent": "^2.0.0",
     "passport-github": "^1.1.0",
+    "passport-local": "^1.0.0",
+    "password-hash-and-salt": "^0.1.4",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.17.0",

@@ -8,6 +8,7 @@
     BACKEND_DEBUG_MODE ? false,
     NGINX_DEBUG_MODE ? false,
     VUE_COMPILE ? false,
+    ENVIRONMENT_NAME ? "production",
 
     # Run-time configurations
     ## Session encryption key
@@ -29,6 +30,7 @@
 
     # Network
     SERVICE_PORT ? 8080,
+    POSTGRES_EXPOSED_PORT ? null,
     EXTERNAL_URL ? "http://localhost:${toString SERVICE_PORT}",
 
     # Filesystem
@@ -84,6 +86,7 @@ in
       working_dir = "/var/www_rw";
       environment = {
         PORT = 8080;
+        NODE_ENV = ENVIRONMENT_NAME;
         VUE_APP_FIREBASE_PUBLIC_VAPID_KEY = VUE_APP_FIREBASE_PUBLIC_VAPID_KEY;
         VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH = "/var/www_rw/firebase.webapp.json";
       } // optionalAttrs VUE_COMPILE {
@@ -152,6 +155,7 @@ in
         PORT = 8080;
         EXTERNAL_URL_PREFIX = "/api";
         POSTGRES_HOST = "postgres";
+        NODE_ENV = ENVIRONMENT_NAME;
         inherit EXTERNAL_URL;
         inherit APPLICATION_KEY;
         BACKEND_FIREBASE_SERVICE_ACCOUNT_CONFIG_PATH = toString BACKEND_FIREBASE_SERVICE_ACCOUNT_CONFIG_PATH;
@@ -179,6 +183,10 @@ in
         
       volumes = [
         "${toString POSTGRES_DATA_PATH}:/database"
+      ];
+
+      ports = optionals (POSTGRES_EXPOSED_PORT != null) [
+        "127.0.0.1:${toString POSTGRES_EXPOSED_PORT}:5432"
       ];
     };
   };

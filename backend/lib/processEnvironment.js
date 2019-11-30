@@ -10,6 +10,8 @@ const envDescs = {
     "POSTGRES_USER": "Postgres server user e.g. 'greg'",
     "POSTGRES_PASSWORD": "Postgres server host e.g. '1337hacker'",
     "POSTGRES_DATABASE": "Postgres database name e.g. 'app'",
+    "NODE_ENV": "Node process environment name e.g. 'development'",
+    "DEBUG": "Node debug mode switch e.g. '1' or undefined",
 };
 
 function logConfigInfo(envKey, info) {
