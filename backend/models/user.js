@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     username: { type: DataTypes.STRING, unique: 'users_username_key' },
     name: DataTypes.STRING,
     surname: DataTypes.STRING,
-    email: { type: DataTypes.STRING, unique: 'users_username_key' },
-    githubId: { type: DataTypes.INTEGER, unique: 'users_username_key' },
+    email: { type: DataTypes.STRING, unique: 'users_email_key' },
+    githubId: { type: DataTypes.INTEGER, unique: 'users_githubId_key' },
     role: DataTypes.STRING,
     saltedPasswordHash: DataTypes.STRING,
   }, {});
