@@ -1,0 +1,6 @@
+FROM node:12.10.0-alpine
+COPY ./. /var/app
+WORKDIR /var/app
+RUN npm install && chmod +x ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
+CMD npx node server.js

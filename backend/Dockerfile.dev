@@ -1,0 +1,6 @@
+FROM node:12.10.0-alpine
+COPY ./entrypoint.sh /var/app/entrypoint.sh
+WORKDIR /var/app
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
+CMD npx nodemon server.js

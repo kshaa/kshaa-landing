@@ -1,0 +1,5 @@
+FROM node:12.10.0-alpine
+COPY ./. /var/app
+WORKDIR /var/app
+RUN npm install && npm run build
+CMD npm run serve
