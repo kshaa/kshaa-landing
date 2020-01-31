@@ -2,6 +2,9 @@ const exportData = {
   devServer: {
     disableHostCheck: true,
   },
+  configureWebpack: {
+    devtool: 'source-map',
+  },
 };
 
 if (process.env.OUTPUT_DIR) {

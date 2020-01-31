@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import LoadingDualRing from '@/components/LoadingDualRing.vue';
 
 @Component({
   metaInfo: {
@@ -29,17 +30,12 @@ import { Component, Vue } from 'vue-property-decorator';
   },
 })
 export default class Home extends Vue {
-  loading?: boolean
-
   isAdmin?: boolean | null
-
   isAuthenticated?: false | null
-
   error?: string | null
 
   data() {
     return {
-      loading: this.loading || false,
       isAuthenticated: this.isAuthenticated || false,
       error: this.error || null,
     };
@@ -51,15 +47,9 @@ export default class Home extends Vue {
     this.fetchData();
   }
 
-  watch = {
-    // call again the method if the route changes
-    $route: 'fetchData',
-  }
-
   fetchData() {
     this.error = null;
     this.isAuthenticated = false;
-    this.loading = true;
     fetch('/api/auth').then(response => response.json().then((status) => {
       this.isAuthenticated = status.isAuthenticated;
       this.isAdmin = status.isAdmin;
