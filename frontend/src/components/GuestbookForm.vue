@@ -1,18 +1,18 @@
 <template>
-  <div class="card">
-    <h2 class="title">Guestbook</h2>
-    <p class="info">Leave a message in the guestbook</p>
-    <p><i class="notice">The guestbook is visible only to me (Veinbahs)</i></p>
-    <p><i class="notice">Your IP and user agent may be logged</i></p>
-    <p><i class="notice">Feel free to send memes, but don't spam</i></p>
-    <form method="POST" action="/api/guestbook/write" @submit="formSubmit">
-      <div class="messageForm">
-        <textarea class="message" name="message" v-model="message" placeholder="Be creative">
-        </textarea>
-        <button class="submit" type="submit">Send</button>
-      </div>
-    </form>
-  </div>
+  <v-content>
+    <v-container class="guestbook-write fill-height flex-column px-1" fluid>
+      <h2 class="headline font-weight-bold pb-4">Guestbook</h2>
+      <p class="font-italic">Leave a message in the guestbook</p>
+      <p class="font-italic">The guestbook is visible only to me (Veinbahs)</p>
+      <v-form class="guestbook-form" method="POST" action="/api/guestbook/write" @submit="formSubmit">
+        <v-card class="message-card d-flex flex-column">
+          <v-textarea class="message mx-4 mt-2" name="message" v-model="message" placeholder="Message">
+          </v-textarea>
+          <v-btn class="mx-4 mb-6 align-self-end">Send</v-btn>
+        </v-card>
+      </v-form>
+    </v-container>
+  </v-content>
 </template>
 
 <script lang="ts">
@@ -62,33 +62,19 @@ export default class GuestbookForm extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-.title {
-  color: white;
+<style lang="scss">
+.guestbook-form {
+  max-width: 100%;
 }
 
-.messageForm {
-  width: 100%;
-  max-width: 300px;
-  margin: 10px auto 0;
+.message-card {
+  max-width: 100%;
+  width: 350px;  
+}
 
-  .message {
-    box-sizing: border-box;
-    display: block;
-    width: 100%;
-    min-height: 100px;
-  }
-
-  .submit {
-    background: #333;
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 15px;
-    border: 0;
-    box-sizing: border-box;
-    text-transform: uppercase;
-    width: 100%;
-  }
+.message textarea {
+  height: 200px;
+  min-height: 200px;
+  max-height: 350px;
 }
 </style>

@@ -1,20 +1,15 @@
 <template>
-  <div class="login">
-    <div class="card">
-      <div>
-        <h2 class="title">Login</h2>
-        <p>Only Github social login is supported</p>
-        <p><i>Note that logging in has an effect only if I've invited you!</i></p>
-        <p><i>Otherwise nothing will change.</i></p>
-        <div class="social-logins links">
-          <a href="/api/auth/github">
-            <FontAwesomeIcon :icon="['fab', 'github']" />
-            <p>Github OAuth</p>
-          </a>
-        </div>
+  <v-content>
+    <v-container class="fill-height justify-center flex-column" fluid>
+      <h2 class="headline font-weight-bold pb-4">Login</h2>
+      <div class="social-logins links">
+        <a class="fa" href="/api/auth/github">
+          <FontAwesomeIcon :icon="['fab', 'github']" />
+          <p class="ma-0">Github OAuth</p>
+        </a>
       </div>
-    </div>
-  </div>
+    </v-container>
+  </v-content>
 </template>
 
 <script lang="ts">

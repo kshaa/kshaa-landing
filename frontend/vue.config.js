@@ -3,8 +3,12 @@ const exportData = {
     disableHostCheck: true,
   },
   configureWebpack: {
+    // For breakpoint-debugging Vue from VSCode
     devtool: 'source-map',
   },
+  transpileDependencies: [
+    'vuetify',
+  ],
 };
 
 if (process.env.OUTPUT_DIR) {

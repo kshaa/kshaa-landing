@@ -1,27 +1,30 @@
 <template>
-  <div id="app">
-    <div v-if="isAuthenticated" class="nav logged-in">
-      <router-link to="/"><FontAwesomeIcon icon="home" /></router-link>
-      <router-link to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-      <a href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
-    </div>
-    <div v-else-if="isAdmin" class="nav logged-in">
-      <router-link to="/"><FontAwesomeIcon icon="home" /></router-link>
-      <router-link to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
-      <a href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
-    </div>
-    <div v-else class="nav logged-out">
-      <router-link to="/"><FontAwesomeIcon icon="home" /></router-link>
-      <router-link to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-      <router-link to="/login"><FontAwesomeIcon icon="key" /></router-link>
-    </div>
-    <router-view v-bind:isAuthenticated="isAuthenticated" v-bind:isAdmin="isAdmin" />
-  </div>
+  <v-app id="app">
+    <v-container class="fill-height align-start justify-center pa-5">
+      <v-container v-if="isAuthenticated" class="nav logged-in">
+        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
+        <router-link class="fa my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
+        <a class="fa my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
+      </v-container>
+      <v-container v-else-if="isAdmin" class="nav logged-in">
+        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
+        <router-link class="fa my-2 mx-5" to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
+        <a class="fa my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
+      </v-container>
+      <v-container v-else class="nav logged-out pa-7">
+        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
+        <router-link class="fa my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
+        <router-link class="fa my-2 mx-5" to="/login"><FontAwesomeIcon icon="key" /></router-link>
+      </v-container>
+      <router-view v-bind:isAuthenticated="isAuthenticated" v-bind:isAdmin="isAdmin" />
+      <v-container class="elegant-emptiness">
+      </v-container>
+    </v-container>
+  </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import LoadingDualRing from '@/components/LoadingDualRing.vue';
 
 @Component({
   metaInfo: {
@@ -36,14 +39,13 @@ export default class Home extends Vue {
 
   data() {
     return {
+      isAdmin: false,
       isAuthenticated: this.isAuthenticated || false,
       error: this.error || null,
     };
   }
 
   created() {
-    // fetch the data when the view is created and the data is
-    // already being observed
     this.fetchData();
   }
 
@@ -68,35 +70,35 @@ export default class Home extends Vue {
 </script>
 
 <style lang="scss">
-body {
-  margin: 0;
-  background: black;
-}
-
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #ddd;
-  padding: 20px;
-}
-
-.nav {
-  padding: 30px;
+// Navigation container
+#app .nav {
   display: flex;
   justify-content: center;
 }
 
-.nav a {
-  font-size: 30px;
-  margin: 10px 30px;
-  text-decoration: none;
-  transition: 0.15s;
-  color: #aaa
+// Default FontAwesome icon styling
+#app a.fa {
+  border: none;
 }
 
-.nav a:hover,
-.nav a:active {
-  color: #fff
+#app a.fa svg.svg-inline--fa {
+  font-size: 30px;
+}
+
+#app a:hover,
+#app a:active {
+  color: #fff;
+  border-color: transparent;
+}
+
+#app a {
+  color: #aaa;
+  border-bottom: solid 2px #aaa;
+  transition: 0.15s;
+}
+
+// Footer
+.elegant-emptiness {
+  min-height: 10em
 }
 </style>

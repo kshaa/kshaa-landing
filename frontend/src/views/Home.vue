@@ -1,10 +1,12 @@
 <template>
-  <div class="home">
-    <div class="card">
-      <KshaaAbout shortDescription="DevOps / Student @ LU / Cyclist"/>
-      <KshaaSocial/>
-    </div>
-  </div>
+  <v-content>
+    <v-container class="fill-height justify-center" fluid>
+      <div class="card">
+        <KshaaAbout shortDescription="DevOps / Student @ LU / Cyclist"/>
+        <KshaaSocial/>
+      </div>
+    </v-container>
+  </v-content>
 </template>
 
 <script lang="ts">
@@ -23,10 +25,3 @@ import KshaaSocial from '@/components/KshaaSocial.vue'; // @ is an alias to /src
 })
 export default class Home extends Vue {}
 </script>
-
-<style lang="scss" scoped>
-.home {
-  max-width: 600px;
-  margin: 15vh auto 0 auto;
-}
-</style>

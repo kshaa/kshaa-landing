@@ -1,9 +1,9 @@
 <template>
   <div class="kshaa-social links">
-    <a href="https://github.com/kshaa">
+    <a class="fa my-2 mx-5" href="https://github.com/kshaa">
       <FontAwesomeIcon :icon="['fab', 'github']" />
     </a>
-    <a href="https://linkedin.com/in/kveinbahs">
+    <a class="fa my-2 mx-5" href="https://linkedin.com/in/kveinbahs">
       <FontAwesomeIcon :icon="['fab', 'linkedin']" />
     </a>
   </div>
@@ -20,22 +20,11 @@ export default class KshaaAbout extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
 .links {
   display: flex;
   justify-content: center;
   opacity: 0.85;
   color: #fff;
   margin-top: 40px;
-}
-.links a {
-  font-size: 30px;
-  margin: 10px 30px;
-  text-decoration: none;
-  transition: 0.15s;
-  color: #aaa
-}
-.links a:hover {
-  color: #fff
 }
 </style>

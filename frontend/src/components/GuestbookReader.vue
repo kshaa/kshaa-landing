@@ -46,6 +46,7 @@ interface PageEntry {
   message : string
 }
 
+// @ts-ignore
 const uaParser = require('ua-parser-js');
 
 @Component({
@@ -72,11 +73,6 @@ export default class GuestbookReader extends Vue {
     // fetch the data when the view is created and the data is
     // already being observed
     this.fetchData();
-  }
-
-  watch = {
-    // call again the method if the route changes
-    $route: 'fetchData',
   }
 
   fetchData(this: GuestbookReader) {
