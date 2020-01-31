@@ -2,6 +2,10 @@
   "name": "kshaa-landing-backend",
   "version": "0.1.0",
   "main": "server.js",
+  "scripts": {
+    "serve": "npx nodemon server.js",
+    "debug": "npx nodemon --inspect=0.0.0.0:${DEBUG_PORT} server.js"
+  },
   "dependencies": {
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
@@ -16,5 +20,8 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.17.0",
     "sequelize-cli": "^5.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
