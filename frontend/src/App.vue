@@ -64,6 +64,7 @@ export default class Home extends Vue {
 </script>
 
 <style lang="scss">
+// Let views decide their own layout
 .app-content {
   width: 100%;
 }

@@ -1,20 +1,20 @@
 <template>
   <v-content>
-    <v-container class="fill-height justify-center align-center flex-column" fluid>
+    <v-container class="authentication fill-height justify-center align-center flex-column" fluid>
       <h2 class="headline font-weight-bold pb-4">Authentication</h2>
-      <div>
+      <v-container class="authentication-tabset d-flex justify-center">
         <v-tabs
           class="login-tabs"
           background-color="transparent"
           color="grey lighten-4"
           :centered="true">
-          <v-tab key="login"  class="font-weight-bold">
+          <v-tab key="login" class="tab-selector font-weight-bold">
             Login
           </v-tab>
-          <v-tab key="register" class="font-weight-bold">
+          <v-tab key="register" class="tab-selector font-weight-bold">
             Register
           </v-tab>
-          <v-tab key="social" class="font-weight-bold">
+          <v-tab key="social" class="tab-selector font-weight-bold">
             Social
           </v-tab>
           <v-tab-item key="login">
@@ -32,7 +32,7 @@
             </div>
           </v-tab-item>
         </v-tabs>
-      </div>
+      </v-container>
     </v-container>
   </v-content>
 </template>
@@ -63,7 +63,29 @@ export default class Login extends Vue {}
   width: $mini-component-size;
   max-width: 100%;
 }
+
 .login-tabs .v-item-group {
   background-color: transparent;
+}
+
+.authentication-tabset {
+  width: $mini-component-size;
+  max-width: 100%;
+}
+
+// Smaller tabs on mobile
+@media (max-width: 480px) {
+  .authentication .v-slide-group__prev {
+    display: none !important;
+  }
+
+  .authentication .tab-selector {
+    min-width: 40px;
+    padding: 6px;
+    font-size: 12px;
+  }
+  .authentication .v-tabs-slider-wrapper {
+    width: 40px;
+  }
 }
 </style>
