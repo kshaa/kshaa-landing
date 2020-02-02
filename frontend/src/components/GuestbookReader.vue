@@ -5,7 +5,7 @@
       <p>Read messages from the guestbook</p>
       <div class="list">
         <div class="entry" v-for="entry in pageEntries" v-bind:key="entry.id">
-          <div class="message">"{{ entry.message }}"</div>
+          <div class="message">{{ entry.message }}</div>
           <div class="meta">
             <span class="os">
               {{ entry.parsedAgent.os.name || 'Unknown OS' }}
@@ -44,6 +44,7 @@ interface PageEntry {
     }
   },
   ipAddress : string
+  createdAt? : string
   formattedCreatedAt : string
   message : string
 }
@@ -99,7 +100,7 @@ export default class GuestbookReader extends Vue {
         // Formatted date
         let formattedCreatedAt = '';
         try {
-          const dateLV = (new Date('2019-09-13T15:59:23.215Z')).toLocaleString('lv-LV');
+          const dateLV = (new Date(srcEntry.createdAt)).toLocaleString('lv-LV');
           formattedCreatedAt = `${dateLV} LV`;
         } catch (error) {
           /* eslint-disable no-console */

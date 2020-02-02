@@ -155,7 +155,7 @@ router.post('/guestbook/write', async (ctx, next) => {
   let userAgent = ctx.userAgent.source || null;
   let guestbookEntry = guestbook.build({
     userId,
-    message,
+    message: message.trim(),
     ipAddress,
     userAgent
   })
