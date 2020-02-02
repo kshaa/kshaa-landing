@@ -101,8 +101,7 @@ export default class RegisterForm extends Vue {
       // Trigger authentication check to render logged in view
       .then(() => {
         this.$router.push('/');
-        this.checkAuthentication()
-        alert('Registration successful');
+        this.checkAuthentication();
       })
       .catch(function(e) {
         if (e instanceof HumanReadableError) {

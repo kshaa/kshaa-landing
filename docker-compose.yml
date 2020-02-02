@@ -1,0 +1,56 @@
+version: '3'
+services:
+  be:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/var/app
+    depends_on:
+      - db
+    environment:
+      APPLICATION_KEY: abcdefg
+      EXTERNAL_URL: http://localhost:8080
+      EXTERNAL_URL_PREFIX: /api
+      NODE_ENV: development
+      PORT: 8080
+      DEBUG_PORT: 9229
+      POSTGRES_DATABASE: landing
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: landing
+      POSTGRES_USER: landing
+      EMAIL_NOTIFICATIONS: "true"
+      SERVICE_EMAIL: "${SERVICE_EMAIL}"
+      SERVICE_EMAIL_PASSWORD: "${SERVICE_EMAIL_PASSWORD}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
+    ports:
+      # Exposed API for Postman debugging
+      - 127.0.0.1:8081:8080
+      # Exposed NodeJS debug listener for VSC debugging
+      - 127.0.0.1:9229:9229
+  fe:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      PORT: 8080
+      BACKEND_HOST: http://be:8080/
+      API_URL_PREFIX: /api
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - ./frontend:/var/app
+  db:
+    image: postgres
+    environment:
+      PGDATA: /database
+      POSTGRES_DB: landing
+      POSTGRES_PASSWORD: landing
+      POSTGRES_USER: landing
+    expose:
+      - 5432
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - ./data/database:/database

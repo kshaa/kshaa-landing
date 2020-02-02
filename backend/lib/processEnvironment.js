@@ -10,6 +10,10 @@ const envDescs = {
     "POSTGRES_USER": "Postgres server user e.g. 'greg'",
     "POSTGRES_PASSWORD": "Postgres server host e.g. '1337hacker'",
     "POSTGRES_DATABASE": "Postgres database name e.g. 'app'",
+    "EMAIL_NOTIFICATIONS": "Should email notifications be sent",
+    "SERVICE_EMAIL": "What email should be used for sending notifications from this service",
+    "SERVICE_EMAIL_PASSWORD": "What's the pasword for the service email",
+    "ADMIN_EMAIL": "What email should receive the notifications",
     "NODE_ENV": "Node process environment name e.g. 'development'",
     "DEBUG": "Node debug mode switch e.g. '1' or undefined",
 };

@@ -5,7 +5,7 @@ const bodyParser = require('koa-bodyparser')
 const userAgent = require('koa-useragent')
 const authentication = require('./lib/authentication')
 const models = require('./models')
-const user = models.user
+const gmailSend = require('gmail-send') 
 const guestbook = models.guestbook
 
 const apiPrefix = process.env.EXTERNAL_URL_PREFIX || '';
@@ -162,15 +162,34 @@ router.post('/guestbook/write', async (ctx, next) => {
 
   try {
     await guestbookEntry.save();
-    ctx.body = {
-      success: true,
-    }
   } catch (error) {
     ctx.body = {
       success: false,
     }
+    return await next()
   }
 
+  try {
+    if (process.env['EMAIL_NOTIFICATIONS'] === 'true') {
+      await gmailSend({
+        user: process.env['SERVICE_EMAIL'],
+        pass: process.env['SERVICE_EMAIL_PASSWORD'],
+        to: process.env['ADMIN_EMAIL'],
+        subject: 'Kshaa landing guestbook entry written',
+        text: `IP Address: ${ipAddress} \nMessage: \n\n${message}`
+      })();
+    }
+  } catch (error) {
+    ctx.body = {
+      success: true,
+      infoMessage: "Message sent successfully, but won't be seen immediately"
+    }
+    return await next()
+  } 
+
+  ctx.body = {
+    success: true,
+  }
   return await next()
 });
 

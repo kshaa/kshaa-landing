@@ -47,11 +47,16 @@ export default class GuestbookForm extends Vue {
     })
       .then((response) => {
         if (!response.data.success) {
-          throw new Error('There was a problem sending the message');
+          alert('There was a problem sending the message');
+        } else {
+          if (response.data.infoMessage) {
+            alert(response.data.infoMessage)
+          } else {
+            alert('Message sent succesfully');
+          }
         }
-
+        // Clear form
         this.message = null;
-        alert('Message sent succesfully');
       })
       .catch((error) => {
         alert(error.message);

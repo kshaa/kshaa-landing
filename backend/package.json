@@ -7,6 +7,7 @@
     "debug": "npx nodemon --inspect=0.0.0.0:${DEBUG_PORT} server.js"
   },
   "dependencies": {
+    "gmail-send": "^1.8.10",
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
     "koa-passport": "^4.1.3",
