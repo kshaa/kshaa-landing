@@ -1,9 +1,9 @@
 <template>
   <div class="kshaa-social links">
-    <a class="fa my-2 mx-5" href="https://github.com/kshaa">
+    <a class="my-2 mx-5" href="https://github.com/kshaa">
       <FontAwesomeIcon :icon="['fab', 'github']" />
     </a>
-    <a class="fa my-2 mx-5" href="https://linkedin.com/in/kveinbahs">
+    <a class="my-2 mx-5" href="https://linkedin.com/in/kveinbahs">
       <FontAwesomeIcon :icon="['fab', 'linkedin']" />
     </a>
   </div>

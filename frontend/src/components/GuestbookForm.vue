@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <v-container class="guestbook-write fill-height align-stretch text-center flex-column px-1" fluid>
+    <v-container class="guestbook-write fill-height align-stretch justify-center text-center flex-column px-1" fluid>
       <h2 class="headline font-weight-bold pb-4">Guestbook</h2>
       <p class="font-italic">Leave a message in the guestbook</p>
       <p class="font-italic">The guestbook is visible only to me (Veinbahs)</p>

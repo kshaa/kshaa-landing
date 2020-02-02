@@ -1,22 +1,16 @@
 <template>
   <v-app id="app">
-    <v-container class="fill-height align-start justify-center pa-5">
-      <v-container v-if="isAuthenticated" class="nav logged-in">
-        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
-        <router-link class="fa my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-        <a class="fa my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
+    <v-container class="fill-height align-start flex-column justify-stretch pa-5">
+      <v-container class="d-flex justify-center nav">
+        <router-link class="my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
+
+        <router-link v-if="!isAdmin" class="my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
+        <router-link v-if="isAdmin" class="my-2 mx-5" to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
+
+        <router-link v-if="!isAuthenticated" class="my-2 mx-5" to="/auth"><FontAwesomeIcon icon="key" /></router-link>
+        <a v-if="isAuthenticated" class="my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
       </v-container>
-      <v-container v-else-if="isAdmin" class="nav logged-in">
-        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
-        <router-link class="fa my-2 mx-5" to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
-        <a class="fa my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
-      </v-container>
-      <v-container v-else class="nav logged-out pa-7">
-        <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
-        <router-link class="fa my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-        <router-link class="fa my-2 mx-5" to="/auth"><FontAwesomeIcon icon="key" /></router-link>
-      </v-container>
-      <router-view v-bind:isAuthenticated="isAuthenticated" v-bind:checkAuthentication="checkAuthentication" v-bind:isAdmin="isAdmin" />
+      <router-view class="app-content" v-bind:isAuthenticated="isAuthenticated" v-bind:checkAuthentication="checkAuthentication" v-bind:isAdmin="isAdmin" />
       <v-container class="elegant-emptiness">
       </v-container>
     </v-container>
@@ -70,18 +64,12 @@ export default class Home extends Vue {
 </script>
 
 <style lang="scss">
-// Navigation container
-#app .nav {
-  display: flex;
-  justify-content: center;
+.app-content {
+  width: 100%;
 }
 
 // Default FontAwesome icon styling
-#app a.fa {
-  border: none;
-}
-
-#app a.fa svg.svg-inline--fa {
+.svg-inline--fa {
   font-size: 30px;
 }
 

@@ -1,36 +1,38 @@
 <template>
   <v-content>
-    <v-container class="fill-height justify-center flex-column" fluid>
+    <v-container class="fill-height justify-center align-center flex-column" fluid>
       <h2 class="headline font-weight-bold pb-4">Authentication</h2>
-      <v-tabs
-        class="login-tabs"
-        background-color="transparent"
-        color="grey lighten-4"
-        :centered="true">
-        <v-tab key="login"  class="font-weight-bold">
-          Login
-        </v-tab>
-        <v-tab key="register" class="font-weight-bold">
-          Register
-        </v-tab>
-        <v-tab key="social" class="font-weight-bold">
-          Social
-        </v-tab>
-        <v-tab-item key="login">
-          <LoginForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></LoginForm>
-        </v-tab-item>
-        <v-tab-item key="register">
-          <RegisterForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></RegisterForm>
-        </v-tab-item>
-        <v-tab-item key="social">
-          <div class="d-flex justify-center pt-6">
-            <a class="fa d-inline-flex align-center" href="/api/auth/github">
-              <FontAwesomeIcon :icon="['fab', 'github']" />
-              <span class="ml-4 ma-0">Github</span>
-            </a>
-          </div>
-        </v-tab-item>
-      </v-tabs>
+      <div>
+        <v-tabs
+          class="login-tabs"
+          background-color="transparent"
+          color="grey lighten-4"
+          :centered="true">
+          <v-tab key="login"  class="font-weight-bold">
+            Login
+          </v-tab>
+          <v-tab key="register" class="font-weight-bold">
+            Register
+          </v-tab>
+          <v-tab key="social" class="font-weight-bold">
+            Social
+          </v-tab>
+          <v-tab-item key="login">
+            <LoginForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></LoginForm>
+          </v-tab-item>
+          <v-tab-item key="register">
+            <RegisterForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></RegisterForm>
+          </v-tab-item>
+          <v-tab-item key="social">
+            <div class="d-flex justify-center pt-6">
+              <a class="fa d-inline-flex align-center" href="/api/auth/github">
+                <FontAwesomeIcon :icon="['fab', 'github']" />
+                <span class="ml-4 ma-0">Github</span>
+              </a>
+            </div>
+          </v-tab-item>
+        </v-tabs>
+      </div>
     </v-container>
   </v-content>
 </template>

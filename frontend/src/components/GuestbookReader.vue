@@ -1,31 +1,33 @@
 <template>
-  <div class="card">
-    <h2 class="title">Guestbook submissions</h2>
-    <i class="info">Read messages from the guestbook</i>
-    <div class="list">
-      <div class="entry" v-for="entry in pageEntries" v-bind:key="entry.id">
-        <div class="message">"{{ entry.message }}"</div>
-        <div class="meta">
-          <span class="os">
-            {{ entry.parsedAgent.os.name || 'Unknown OS' }}
-          </span>
-          <span class="separator"> | </span>
-          <span class="browser">
-            {{ entry.parsedAgent.browser.name || 'Unknown browser' }}
-          </span>
-          <span class="separator"> | </span>
-          <span class="ipAddress">
-            {{ entry.ipAddress }}
-          </span>
-          <span class="separator"> | </span>
-          <span class="createdAt">
-            {{ entry.formattedCreatedAt }}
-          </span>
+  <v-content>
+    <v-container class="guestbook px-1 fill-height flex-column justify-center" fluid>
+      <h2 class="headline font-weight-bold">Guestbook submissions</h2>
+      <p>Read messages from the guestbook</p>
+      <div class="list">
+        <div class="entry" v-for="entry in pageEntries" v-bind:key="entry.id">
+          <div class="message">"{{ entry.message }}"</div>
+          <div class="meta">
+            <span class="os">
+              {{ entry.parsedAgent.os.name || 'Unknown OS' }}
+            </span>
+            <span class="separator"> | </span>
+            <span class="browser">
+              {{ entry.parsedAgent.browser.name || 'Unknown browser' }}
+            </span>
+            <span class="separator"> | </span>
+            <span class="ipAddress">
+              {{ entry.ipAddress }}
+            </span>
+            <span class="separator"> | </span>
+            <span class="createdAt">
+              {{ entry.formattedCreatedAt }}
+            </span>
+          </div>
         </div>
+        <p class="error" v-if="error">{{error}} :(</p>
       </div>
-      <p class="error" v-if="error">{{error}} :(</p>
-    </div>
-  </div>
+    </v-container>
+  </v-content>
 </template>
 
 <script lang="ts">
