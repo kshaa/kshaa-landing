@@ -1,0 +1,52 @@
+<template>
+  <v-form class="d-flex flex-column" @submit.prevent="login">
+    <v-text-field v-model="username" label="Username" :rules="[rules.isRequired]"></v-text-field>
+    <v-text-field v-model="password" type="password" label="Password" :rules="[rules.isRequired]"></v-text-field>
+    <v-btn type="submit">Login</v-btn>
+  </v-form>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({
+  props: {
+    checkAuthentication: Function
+  }
+})
+export default class LoginForm extends Vue {
+  username: string;
+  password: string;
+  checkAuthentication: () => Promise<void>;
+  rules = {
+    isRequired: (v) => !!v || 'Value is required',
+  };
+  data() {
+    return {
+      username: '',
+      password: '',
+    }
+  };
+  login = function() {
+    return this.axios.post('/api/auth/local/login', {
+      username: this.username,
+      password: this.password
+    })
+      .then((result) => {
+        if (!result.data.success) {
+          if (result.data.errorMessage) {
+            alert(result.data.errorMessage);
+          } else {
+            alert("There was a problem logging in");
+          }
+        } else {
+          this.$router.push('/');
+          this.checkAuthentication();
+        }
+      })
+      .catch((e) => {
+        alert("There was a problem logging in");
+      })
+  }
+}
+</script>

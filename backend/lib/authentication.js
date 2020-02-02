@@ -66,14 +66,14 @@ function createPassport(config) {
         where: { username }
       }).then(function(userResult) {
         if (!userResult) {
-          done(null, false)
+          done("User doesn't exist", false)
         } else {
           let user = userResult.get();
           passwordHashAndSalt(password).verifyAgainst(user.saltedPasswordHash, function(error, verified) {
             if (error) {
               done(error);
             } else if (!verified) {
-              done(null, false);
+              done("Password is incorrect", false);
             } else {
               done(null, user)
             }
@@ -103,22 +103,32 @@ function isUserEmailUnique(email) {
 async function registerUser(username, password, email, name, surname) {
   return new Promise(async (resolve, reject) => {
     // Is all data present?
-    if (!username) reject(new Error("Missing parameter 'username'"))
-    if (!password) reject(new Error("Missing parameter 'password'"))
-    if (!email) reject(new Error("Missing parameter 'email'"))
-    if (!name) reject(new Error("Missing parameter 'name'"))
-    if (!surname) reject(new Error("Missing parameter 'surname'"))
+    if (!username) { reject(new Error("Username can't be empty")); return; }
+    if (!password) { reject(new Error("Password can't be empty")); return; }
+
+    // Is email present and valid?
+    if (email && !email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+      reject(new Error("Email doesn't seem valid"))
+      return;
+    }
 
     // Is user unique?
-    if (!(await isUsernameUnique(username)))
-      reject(new Error("User with the following username already exists!"));
+    if (!(await isUsernameUnique(username))) {
+      reject(new Error("User with the provided username already exists!"));
+      return;
+    }
 
-    if (!(await isUserEmailUnique(email)))
-      reject(new Error("User with the following email already exists!"));
+    if (email && !(await isUserEmailUnique(email))) {
+      reject(new Error("User with the provided email already exists!"));
+      return;
+    }
 
     // Create new salted password hash for user
     passwordHashAndSalt(password).hash(function(error, hash) {
-      if (error) reject(new Error("Failed to encrypt user data, cancelling!"));    
+      if (error) {
+        reject(new Error("Failed to encrypt user data, cancelling!"))
+        return;
+      };
       
       // Create new user
       user.build({
@@ -132,9 +142,11 @@ async function registerUser(username, password, email, name, surname) {
       .save()
       .then(() => {
         resolve();
+        return;
       })
       .catch((error) => {
         reject(new Error("Failed to save user to database! Reason: " + error.message))
+        return;
       })
     })
   })

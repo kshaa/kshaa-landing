@@ -25,3 +25,10 @@ import KshaaSocial from '@/components/KshaaSocial.vue'; // @ is an alias to /src
 })
 export default class Home extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+.card {
+  width: $mini-component-size;
+}
+</style>

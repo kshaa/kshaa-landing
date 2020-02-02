@@ -14,9 +14,9 @@
       <v-container v-else class="nav logged-out pa-7">
         <router-link class="fa my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
         <router-link class="fa my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-        <router-link class="fa my-2 mx-5" to="/login"><FontAwesomeIcon icon="key" /></router-link>
+        <router-link class="fa my-2 mx-5" to="/auth"><FontAwesomeIcon icon="key" /></router-link>
       </v-container>
-      <router-view v-bind:isAuthenticated="isAuthenticated" v-bind:isAdmin="isAdmin" />
+      <router-view v-bind:isAuthenticated="isAuthenticated" v-bind:checkAuthentication="checkAuthentication" v-bind:isAdmin="isAdmin" />
       <v-container class="elegant-emptiness">
       </v-container>
     </v-container>
@@ -46,10 +46,10 @@ export default class Home extends Vue {
   }
 
   created() {
-    this.fetchData();
+    this.checkAuthentication();
   }
 
-  fetchData() {
+  checkAuthentication() {
     this.error = null;
     this.isAuthenticated = false;
     fetch('/api/auth').then(response => response.json().then((status) => {
@@ -85,16 +85,19 @@ export default class Home extends Vue {
   font-size: 30px;
 }
 
-#app a:hover,
-#app a:active {
-  color: #fff;
-  border-color: transparent;
+// Link hover color effect
+#app a,
+#app a * {
+  color: #aaa;
+  transition: 0.15s;
+  text-decoration: none;
 }
 
-#app a {
-  color: #aaa;
-  border-bottom: solid 2px #aaa;
-  transition: 0.15s;
+#app a:hover,
+#app a:active,
+#app a:hover *,
+#app a:active * {
+  color: #fff;
 }
 
 // Footer

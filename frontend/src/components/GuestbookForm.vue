@@ -1,14 +1,14 @@
 <template>
   <v-content>
-    <v-container class="guestbook-write fill-height flex-column px-1" fluid>
+    <v-container class="guestbook-write fill-height align-stretch text-center flex-column px-1" fluid>
       <h2 class="headline font-weight-bold pb-4">Guestbook</h2>
       <p class="font-italic">Leave a message in the guestbook</p>
       <p class="font-italic">The guestbook is visible only to me (Veinbahs)</p>
-      <v-form class="guestbook-form" method="POST" action="/api/guestbook/write" @submit="formSubmit">
+      <v-form class="guestbook-form" @submit.prevent="formSubmit">
         <v-card class="message-card d-flex flex-column">
           <v-textarea class="message mx-4 mt-2" name="message" v-model="message" placeholder="Message">
           </v-textarea>
-          <v-btn class="mx-4 mb-6 align-self-end">Send</v-btn>
+          <v-btn class="mx-4 mb-6 align-self-end" type="submit">Send</v-btn>
         </v-card>
       </v-form>
     </v-container>
@@ -32,10 +32,9 @@ export default class GuestbookForm extends Vue {
     };
   }
 
-  formSubmit(e: any) {
+  formSubmit = function(this: GuestbookForm, e: any) {
     /* eslint-disable no-alert */
     e.preventDefault();
-    const currentObj = this;
 
     if (!this.message || (this.message && this.message.trim().length === 0)) {
       alert('This message looks pretty empty');
@@ -63,13 +62,18 @@ export default class GuestbookForm extends Vue {
 </script>
 
 <style lang="scss">
+@import '@/styles/variables.scss';
+
+.guestbook-write {
+  width: $mini-component-size;
+}
+
 .guestbook-form {
   max-width: 100%;
 }
 
 .message-card {
   max-width: 100%;
-  width: 350px;  
 }
 
 .message textarea {

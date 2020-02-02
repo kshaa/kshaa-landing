@@ -45,10 +45,44 @@ const passport = authentication.createPassport({
 });
 
 // # Local user
-router.post('/auth/local/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: apiPrefix + '/login?msg=Unexpected%20error'
-}));
+router.post('/auth/local/login', async (ctx, next) => {
+  await passport.authenticate('local', async function(err, user, info) {
+    if (err) {
+      ctx.body = {
+        success: false,
+        errorMessage: err
+      }  
+    } else if (!user) {
+      if (info.message) {
+        ctx.body = {
+          success: false,
+          errorMessage: info.message
+        }
+      } else {
+        ctx.body = {
+          success: false,
+          errorMessage: "Unknown error occured [#A]"
+        }
+      }
+    } else {
+      ctx.logIn(user, function(err) {
+        if (err) {
+          ctx.body = {
+            success: false,
+            errorMessage: "Unknown error occured [#B]"
+          }
+        } else {
+          ctx.body = {
+            success: true
+          }
+        }
+      })
+    }
+  })(ctx, next);
+
+  return await next();
+});
+
 router.post('/auth/local/register', async (ctx, next) => {
   const { username, password, email, name, surname } = ctx.request.body;
   await authentication.registerUser(

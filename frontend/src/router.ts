@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import Login from './views/Login.vue';
+import Auth from './views/Auth.vue';
 import Guestbook from './views/Guestbook.vue';
 import GuestbookReader from './components/GuestbookReader.vue';
 import GuestbookForm from './components/GuestbookForm.vue';
@@ -19,9 +19,9 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/login',
-      name: 'login',
-      component: Login,
+      path: '/auth',
+      name: 'auth',
+      component: Auth,
     },
     {
       path: '/guestbook',
