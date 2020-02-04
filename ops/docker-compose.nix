@@ -3,14 +3,13 @@
     pkgs ? import <nixpkgs> { inherit system; },
 
     # Build & environment configurations
-    READ_ONLY_SOURCES_MODE ? false,
-    NGINX_DEBUG_MODE ? false,
+    backendImageName,
+    frontendImageName,
     # @to-do, implement VUE_COMPILE=true after fixing typescript bugs
-    VUE_COMPILE ? false,
-    ENVIRONMENT_NAME ? "production",
+    # VUE_COMPILE ? false,
 
-    # Run-time configurations
-    ## Session encryption key
+    # Generic application configuration 
+    ENVIRONMENT_NAME ? "production",
     APPLICATION_KEY ? null,
 
     ## Github
@@ -33,6 +32,7 @@
     SERVICE_PORT ? 8080,
     POSTGRES_EXPOSED_PORT ? null,
     EXTERNAL_URL ? "http://localhost:${toString SERVICE_PORT}",
+    NGINX_DEBUG_MODE ? false,
 
     # Filesystem
     PROJECT_SOURCE_PATH ? ./..,
@@ -60,11 +60,11 @@ in
       image = "nginx:latest";
       
       volumes = [
-        # "${NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
-        # "vue-share:/var/www/public"
-        "${NGINX_WEBPACK_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
+        "${NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
+        "vue-share:/var/www/public"
+        # "${NGINX_WEBPACK_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
       ];
-      # depends_on = [ "frontend" ];
+      depends_on = [ "frontend" ];
       ports = [
         "127.0.0.1:${toString SERVICE_PORT}:80"
       ];
@@ -75,28 +75,29 @@ in
       ];
     };
     frontend = {
-      build = {
-        context = VUE_APP_SOURCE_PATH;
-        # dockerfile = "Dockerfile.prod";
-        dockerfile = "Dockerfile.devprod";
-      };
+      image = frontendImageName;
+      # build = {
+      #   context = VUE_APP_SOURCE_PATH;
+      #   dockerfile = "Dockerfile.prod";
+      #   # dockerfile = "Dockerfile.devprod";
+      # };
       environment = {
         NODE_ENV = ENVIRONMENT_NAME;
         PORT = "8080";
       };
       expose = [ "8080"];
-      # command = "mkdir -p /var/app-compiled;cp -rf /var/app-compiled/* /var/vue-share/;tail -f /dev/null";
-      # volumes = [
-      #   "vue-share:/var/vue-share"
-      # ];
+      volumes = [
+        "vue-share:/var/vue-share"
+      ];
     };
     backend = {
-      build = {
-        context = BACKEND_SOURCE_PATH;
-        # dockerfile = "Dockerfile.prod";
-        dockerfile = "Dockerfile.devprod";
-      };
-      command = "npm run serve";
+      image = backendImageName;
+      # build = {
+      #   context = BACKEND_SOURCE_PATH;
+      #   dockerfile = "Dockerfile.prod";
+      #   # dockerfile = "Dockerfile.devprod";
+      # };
+      # command = "npm run serve";
       environment = {
         inherit APPLICATION_KEY;
         inherit EXTERNAL_URL;

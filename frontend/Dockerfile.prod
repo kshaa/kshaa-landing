@@ -1,7 +1,11 @@
 FROM node:12.14.1-alpine3.11
 COPY ./. /var/app
 WORKDIR /var/app
-ENV OUTPUT_DIR /var/app_compiled
+ENV OUTPUT_DIR /var/app-compiled
+ENV SHARE_DIR /var/vue-share
 RUN npm install && npm run build
-ENTRYPOINT [ "sh", "-c" ]
+# Easily refresh latest entrypoint changes
+COPY ./entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT [ "./entrypoint.sh" ]
 CMD [ "tail -f /dev/null" ]
