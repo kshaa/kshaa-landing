@@ -6,12 +6,10 @@ let
   projectCode = "landing";
   projectLabel = "VueJS Landing page";
   projectFiles = (import ./project-files.nix {}).derivation;
-  dockerComposeFile = pkgs.writeText "landing.docker-compose.yml" (import ./docker-compose.nix {
-    NPM_INSTALL = true;
+  dockerComposeSet = (import ./docker-compose.nix {
     SERVICE_PORT = cfg.port;
     EXTERNAL_URL = externalUrl;
-    DATA_DIR = cfg.dataDir;
-    VUE_COMPILE = true;
+    DATA_PATH = cfg.dataDir;
     APPLICATION_KEY = cfg.applicationKey;
     ADMIN_GITHUB_USER = cfg.githubAdminUser;
     GITHUB_CLIENT_ID = cfg.githubClientId;
@@ -19,8 +17,13 @@ let
     POSTGRES_USER = cfg.postgresUser;
     POSTGRES_PASSWORD = cfg.postgresPassword;
     POSTGRES_DATABASE = cfg.postgresDatabase;
-    PROJECT_FILE_PATH = toString projectFiles;
+    PROJECT_SOURCE_PATH = toString projectFiles;
+    EMAIL_NOTIFICATIONS = cfg.emailNotifications;
+    SERVICE_EMAIL = cfg.serviceEmail;
+    SERVICE_EMAIL_PASSWORD = cfg.serviceEmailPassword;
+    ADMIN_EMAIL = cfg.adminEmail;
   });
+  dockerComposeFile = pkgs.writeText "landing.docker-compose.yml" (builtins.toJSON dockerComposeSet);
 
   cfg = config.services."${projectCode}";
   externalUrl = "${cfg.proxyProtocol}://${cfg.proxyHostname}";
@@ -47,10 +50,18 @@ in
     postgresUser = mkOption { type = types.string; };
     postgresPassword = mkOption { type = types.string; };
     postgresDatabase = mkOption { type = types.string; };
+    emailNotifications = mkOption { type = types.string; };
+    serviceEmail = mkOption { type = types.string; };
+    serviceEmailPassword = mkOption { type = types.string; };
+    adminEmail = mkOption { type = types.string; };
   };
 
   # Definition of the service
   config = mkIf cfg.enable {
+    virtualisation.docker = {
+      enable = true;
+    };
+
     systemd.services."${projectCode}-workdir" = import ./lib/directoryService {
       inherit (cfg) user group;
       directory = cfg.dataDir;
@@ -64,10 +75,12 @@ in
       environment = {
         COMPOSE_PROJECT_NAME = projectCode;
       };
-
+      script = ''
+        ${pkgs.docker_compose}/bin/docker-compose -f '${dockerComposeFile}' build
+        ${pkgs.docker_compose}/bin/docker-compose -f '${dockerComposeFile}' up
+      '';
+      preStop  = "${pkgs.docker_compose}/bin/docker-compose -f '${dockerComposeFile}' down";
       serviceConfig = {
-        ExecStart = "${pkgs.docker_compose}/bin/docker-compose -f '${dockerComposeFile}' up";
-        ExecStop  = "${pkgs.docker_compose}/bin/docker-compose -f '${dockerComposeFile}' down";
         Restart   = "always";
         User      = cfg.user;
         WorkingDirectory = cfg.dataDir;

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "main": "server.js",
   "scripts": {
-    "serve": "npx nodemon server.js",
+    "serve": "node server.js",
+    "watch": "npx nodemon server.js",
     "debug": "npx nodemon --inspect=0.0.0.0:${DEBUG_PORT} server.js"
   },
   "dependencies": {

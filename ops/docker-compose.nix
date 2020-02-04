@@ -4,9 +4,8 @@
 
     # Build & environment configurations
     READ_ONLY_SOURCES_MODE ? false,
-    BACKEND_NODEMON ? false,
-    BACKEND_DEBUG_MODE ? false,
     NGINX_DEBUG_MODE ? false,
+    # @to-do, implement VUE_COMPILE=true after fixing typescript bugs
     VUE_COMPILE ? false,
     ENVIRONMENT_NAME ? "production",
 
@@ -18,15 +17,17 @@
     ADMIN_GITHUB_USER ? null,
     GITHUB_CLIENT_ID ? null,
     GITHUB_CLIENT_SECRET ? null,
-    
+
+    ## Email notifications
+    EMAIL_NOTIFICATIONS ? null,
+    SERVICE_EMAIL ? null,
+    SERVICE_EMAIL_PASSWORD ? null,
+    ADMIN_EMAIL ? null,
+
     ## Postgres database
     POSTGRES_USER ? "landing",
     POSTGRES_PASSWORD ? "landing",
     POSTGRES_DATABASE ? "landing",
-
-    ## Firebase 
-    BACKEND_FIREBASE_DB_URL ? null,
-    VUE_APP_FIREBASE_PUBLIC_VAPID_KEY ? null,
 
     # Network
     SERVICE_PORT ? 8080,
@@ -35,23 +36,21 @@
 
     # Filesystem
     PROJECT_SOURCE_PATH ? ./..,
-    DATA_PATH ? PROJECT_SOURCE_PATH + /data, # For database storage, compiled code, source code copies
-    VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH ? PROJECT_SOURCE_PATH + /firebase.webapp.json,
-    BACKEND_FIREBASE_SERVICE_ACCOUNT_CONFIG_PATH ? PROJECT_SOURCE_PATH + /firebase.serviceaccount.json,
+    DATA_PATH ? PROJECT_SOURCE_PATH + /data, # For database storage
 }:
 let
     inherit (pkgs.lib) optionals optionalString optionalAttrs;
 
     # Project source data subpaths
-    BACKEND_SOURCE_PATH = PROJECT_SOURCE_PATH + /backend;
-    VUE_APP_SOURCE_PATH = PROJECT_SOURCE_PATH + /frontend;
-    NGINX_COMPILED_VUE_CONFIG_PATH = PROJECT_SOURCE_PATH + /ops/nginx.compiled.vue.conf;
-    NGINX_WEBPACK_VUE_CONFIG_PATH = PROJECT_SOURCE_PATH + /ops/nginx.webpack.vue.conf;
+    BACKEND_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/backend";
+    VUE_APP_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/frontend";
+    NGINX_COMPILED_VUE_CONFIG_PATH = (toString PROJECT_SOURCE_PATH) + "/ops/nginx.compiled.vue.conf";
+    NGINX_WEBPACK_VUE_CONFIG_PATH = (toString PROJECT_SOURCE_PATH) + "/ops/nginx.webpack.vue.conf";
 
     # Persistent data subpaths
-    BACKEND_DATA_PATH = DATA_PATH + /be_data;
-    VUE_APP_DATA_PATH = DATA_PATH + /fe_data;
-    POSTGRES_DATA_PATH = DATA_PATH + /db_data;
+    BACKEND_DATA_PATH = (toString DATA_PATH) + "/be_data";
+    VUE_APP_DATA_PATH = (toString DATA_PATH) + "/fe_data";
+    POSTGRES_DATA_PATH = (toString DATA_PATH) + "/db_data";
 in
 {
   version = "3";
@@ -59,19 +58,13 @@ in
   services = {
     proxy = { 
       image = "nginx:latest";
-
-      volumes = if VUE_COMPILE && READ_ONLY_SOURCES_MODE then [
-        "${toString NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
-        "${toString VUE_APP_DATA_PATH}:/var/www/public"
-        "${toString VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH}:/var/www_rw/firebase.config.json"
-      ] else if VUE_COMPILE && !READ_ONLY_SOURCES_MODE then [
-        "${toString NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
-        "${toString VUE_APP_SOURCE_PATH}:/var/www/public"
-        "${toString VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH}:/var/www_rw/firebase.config.json"
-      ] else [
-        "${toString NGINX_WEBPACK_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
+      
+      volumes = [
+        # "${NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
+        # "vue-share:/var/www/public"
+        "${NGINX_WEBPACK_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
       ];
-      depends_on = optionals VUE_COMPILE [ "frontend" ];
+      # depends_on = [ "frontend" ];
       ports = [
         "127.0.0.1:${toString SERVICE_PORT}:80"
       ];
@@ -82,86 +75,42 @@ in
       ];
     };
     frontend = {
-      image = "node:12.10.0-alpine";
-      working_dir = "/var/www_rw";
-      environment = {
-        PORT = 8080;
-        NODE_ENV = ENVIRONMENT_NAME;
-        VUE_APP_FIREBASE_PUBLIC_VAPID_KEY = VUE_APP_FIREBASE_PUBLIC_VAPID_KEY;
-        VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH = "/var/www_rw/firebase.webapp.json";
-      } // optionalAttrs VUE_COMPILE {
-        OUTPUT_DIR = "/var/www_rw/dist";
+      build = {
+        context = VUE_APP_SOURCE_PATH;
+        # dockerfile = "Dockerfile.prod";
+        dockerfile = "Dockerfile.devprod";
       };
-
-      volumes = [
-        # Firebase web app config - No data written
-        "${toString VUE_APP_FIREBASE_WEB_APP_CONFIG_PATH}:/var/www_rw/firebase.webapp.json"
-      ] ++ (if VUE_COMPILE && READ_ONLY_SOURCES_MODE then [
-        # Compiled Vue w/ READ_ONLY_SOURCES_MODE - First copy, then compile
-        "${toString VUE_APP_SOURCE_PATH}:/var/www_ro"
-        "${toString VUE_APP_DATA_PATH}:/var/www_rw"
-      ] else [
-        # VUE_COMPILE && !READ_ONLY_SOURCES_MODE - Write directly to source
-        # !VUE_COMPILE - No data written
-        "${toString VUE_APP_SOURCE_PATH}:/var/www_rw"
-      ]);
-
-      command = if VUE_COMPILE then [
-        "sh"
-        "-c"
-        ''
-          ${optionalString (VUE_COMPILE && READ_ONLY_SOURCES_MODE) "cp -a /var/www_ro/* /var/www_rw/"}
-          npm install
-          # Remove NPM cache which can cache builds
-          rm -rf ./node_modules/.cache/
-          npm run build
-          echo "The build is at '$''${OUTPUT_DIR}'"
-          ls $''${OUTPUT_DIR}
-          ls $''${OUTPUT_DIR}/js
-        '' 
-      ] else [
-        "sh"
-        "-c"
-        ''
-          npm run serve
-        ''
-      ];
+      environment = {
+        NODE_ENV = ENVIRONMENT_NAME;
+        PORT = "8080";
+      };
+      expose = [ "8080"];
+      # command = "mkdir -p /var/app-compiled;cp -rf /var/app-compiled/* /var/vue-share/;tail -f /dev/null";
+      # volumes = [
+      #   "vue-share:/var/vue-share"
+      # ];
     };
     backend = {
-      image = "node:12.10.0-alpine";
-      working_dir = "/var/www_rw";
-      volumes = if READ_ONLY_SOURCES_MODE then [
-        "${toString PROJECT_SOURCE_PATH}/backend:/var/www_ro"
-        "${toString BACKEND_DATA_PATH}:/var/www_rw"
-      ] else [
-        "${toString PROJECT_SOURCE_PATH}/backend:/var/www_rw"
-      ];
-      command = [
-        "/bin/sh"
-        "-c"
-        ''
-          ${optionalString READ_ONLY_SOURCES_MODE "cp -a /var/www_ro/* /var/www_rw/"}
-          echo '(-/3) Installing NPM packages' && \
-          npm install
-          echo '(1/3) Creating database if needed' && \
-          npx sequelize db:create || true && \
-          echo '(2/3) Running database migrations if needed' && \
-          npx sequelize db:migrate && \
-          echo '(3/3) Running backend server' && \
-          ${optionalString BACKEND_DEBUG_MODE "DEBUG=1"} ${if BACKEND_NODEMON then "npx nodemon" else "node"} server.js
-        ''
-      ];
+      build = {
+        context = BACKEND_SOURCE_PATH;
+        # dockerfile = "Dockerfile.prod";
+        dockerfile = "Dockerfile.devprod";
+      };
+      command = "npm run serve";
       environment = {
-        PORT = 8080;
-        EXTERNAL_URL_PREFIX = "/api";
-        POSTGRES_HOST = "postgres";
-        NODE_ENV = ENVIRONMENT_NAME;
-        inherit EXTERNAL_URL;
         inherit APPLICATION_KEY;
-        BACKEND_FIREBASE_SERVICE_ACCOUNT_CONFIG_PATH = toString BACKEND_FIREBASE_SERVICE_ACCOUNT_CONFIG_PATH;
-        inherit BACKEND_FIREBASE_DB_URL;
-        inherit POSTGRES_USER POSTGRES_PASSWORD;
+        inherit EXTERNAL_URL;
+        EXTERNAL_URL_PREFIX = "/api";
+        NODE_ENV = ENVIRONMENT_NAME;
+        PORT = "8080";
         inherit POSTGRES_DATABASE;
+        POSTGRES_HOST = "postgres";
+        inherit POSTGRES_PASSWORD;
+        inherit POSTGRES_USER;
+        inherit EMAIL_NOTIFICATIONS;
+        inherit SERVICE_EMAIL;
+        inherit SERVICE_EMAIL_PASSWORD;
+        inherit ADMIN_EMAIL;
       } // optionalAttrs (ADMIN_GITHUB_USER != null) {
         inherit ADMIN_GITHUB_USER;
       } // optionalAttrs (GITHUB_CLIENT_ID != null) {
@@ -169,7 +118,7 @@ in
       } // optionalAttrs (GITHUB_CLIENT_SECRET != null) {
         inherit GITHUB_CLIENT_SECRET;
       };
-
+      expose = [ "8080"];
       depends_on = [ "postgres" ];
     };
     postgres = {
@@ -189,5 +138,8 @@ in
         "127.0.0.1:${toString POSTGRES_EXPOSED_PORT}:5432"
       ];
     };
+  };
+  volumes = {
+    vue-share = {};
   };
 }

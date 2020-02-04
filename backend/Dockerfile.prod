@@ -3,4 +3,4 @@ COPY ./. /var/app
 WORKDIR /var/app
 RUN npm install && chmod +x ./entrypoint.sh
 ENTRYPOINT [ "./entrypoint.sh" ]
-CMD [ "npx nodemon server.js" ]
+CMD [ "npm run serve" ]

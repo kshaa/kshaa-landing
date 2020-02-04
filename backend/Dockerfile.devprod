@@ -1,0 +1,7 @@
+FROM node:12.14.1-alpine3.11
+COPY ./. /var/app
+WORKDIR /var/app
+RUN npm install && chmod +x /var/app/entrypoint.sh
+# ENTRYPOINT [ "sh", "-c", "/var/app/entrypoint.sh" ]
+#ENTRYPOINT [ "sh", "-c" ]
+#CMD [ "npm run serve" ]
