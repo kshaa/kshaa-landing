@@ -1,14 +1,14 @@
 <template>
   <v-content>
-    <v-container class="guestbook px-1 fill-height flex-column justify-space-between" fluid>
-      <div v-if="isAdmin" class="guestbook-nav logged-in">
-        <router-link class="my-2 mx-5" to="/guestbook/write">
-          <FontAwesomeIcon icon="pen" />
-        </router-link>
-        <router-link class="my-2 mx-5" to="/guestbook/read">
-          <FontAwesomeIcon icon="book" />
-        </router-link>
-      </div>
+    <v-container v-if="isAdmin" class="guestbook-nav text-center logged-in">
+      <router-link class="my-2 mx-5" to="/guestbook/write">
+        <FontAwesomeIcon icon="pen" />
+      </router-link>
+      <router-link class="my-2 mx-5" to="/guestbook/read">
+        <FontAwesomeIcon icon="book" />
+      </router-link>
+    </v-container>
+    <v-container class="guestbook px-1 fill-height justify-space-between" fluid>
       <router-view class="guestbook-view" />
     </v-container>
   </v-content>

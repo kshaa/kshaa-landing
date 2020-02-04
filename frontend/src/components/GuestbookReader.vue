@@ -64,7 +64,7 @@ export default class GuestbookReader extends Vue {
 
   error?: string | null
 
-  static data() {
+  data() {
     return {
       loading: false,
       error: null,
@@ -79,6 +79,7 @@ export default class GuestbookReader extends Vue {
   }
 
   fetchData(this: GuestbookReader) {
+    var self = this;
     this.error = null;
     this.pageEntries = [];
     this.loading = true;
@@ -116,15 +117,15 @@ export default class GuestbookReader extends Vue {
         };
 
         // Exclamation means "I know 'this.pageEntries' won't be null or undefined"
-        this.pageEntries!.push(entry);
+        self.pageEntries!.push(entry);
       });
     }).catch((e) => {
       if (e.response.status === 401) {
-        this.error = 'You are not authorized to view guestbook messages.';
+        self.error = 'You are not authorized to view guestbook messages.';
       } else {
-        this.error = 'Failed fetching guestbook messages.';
+        self.error = 'Failed fetching guestbook messages.';
       }
-      this.pageEntries = null;
+      self.pageEntries = null;
     });
   }
 }

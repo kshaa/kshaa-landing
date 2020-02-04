@@ -30,7 +30,7 @@ export default class LoginForm extends Vue {
     isRequired: (v: string) => !!v || 'Value is required',
   };
 
-  static data() {
+  data() {
     return {
       username: '',
       password: '',
@@ -38,20 +38,21 @@ export default class LoginForm extends Vue {
   }
 
   login = function requestLogin(this: LoginForm) {
+    var self = this;
     return this.axios.post('/api/auth/local/login', {
       username: this.username,
       password: this.password,
     })
       .then(function onLogin(this: LoginForm, result : LoginResponse) {
-        if (!result.data.success) {
+        if (result.data.success === false) {
           if (result.data.errorMessage) {
             alert(result.data.errorMessage);
           } else {
             alert('There was a problem logging in');
           }
         } else {
-          this.$router.push('/');
-          this.checkAuthentication();
+          self.$router.push('/');
+          self.checkAuthentication();
         }
       })
       .catch((e : Error) => {

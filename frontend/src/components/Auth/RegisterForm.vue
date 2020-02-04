@@ -51,7 +51,7 @@ export default class RegisterForm extends Vue {
     passwordsEqual: (password?: string, passwordRepeated?: string) => () => password === passwordRepeated || 'Passwords not equal',
   };
 
-  static data() {
+  data() {
     return {
       error: '',
       username: '',

@@ -29,9 +29,9 @@ export default class GuestbookForm extends Vue {
 
   guestbookContainerClasses =
         'guestbook-write fill-height align-stretch '
-        + 'justify-center text-center flex-column px-1';
+        + 'justify-center text-center d-flex flex-column px-1';
 
-  static data() {
+  data() {
     return {
       message: null,
     };
