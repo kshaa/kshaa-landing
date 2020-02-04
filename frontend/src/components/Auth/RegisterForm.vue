@@ -14,6 +14,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { AxiosResponse } from 'axios';
 import { HumanReadableError } from '../../lib/helpers';
+import { RegistrationResponse } from '../../types';
 
 @Component({
   props: {
@@ -21,22 +22,22 @@ import { HumanReadableError } from '../../lib/helpers';
   }
 })
 export default class RegisterForm extends Vue {
-  error: string;
-  username: string;
-  password: string;
-  passwordRepeated: string;
-  email?: string;
-  name?: string;
-  surname?: string;
-  checkAuthentication: () => Promise<void>;
+  error!: string | null;
+  username!: string;
+  password!: string;
+  passwordRepeated!: string;
+  email!: string;
+  name!: string;
+  surname!: string;
+  checkAuthentication!: () => Promise<void>;
   rules = {
-    isRequired: (v) => !!v || 'Value is required',
-    isEmail: (v) => {
+    isRequired: (v: string) => !!v || 'Value is required',
+    isEmail: (v: string) => {
       return v == '' // No email
         || !!v.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
         || 'Not a valid email';
     },
-    passwordsEqual: (password, passwordRepeated) => {
+    passwordsEqual: (password?: string, passwordRepeated?: string) => {
       return () => password === passwordRepeated
         || "Passwords not equal";
     },
@@ -73,10 +74,10 @@ export default class RegisterForm extends Vue {
     }
     this.axios.post('/api/auth/local/register', payload)
       // Check if successful registration
-      .then(function(response : Object) {
-        if (response['data']['success'] !== true) {
-          if (response['data']['errorMessage']) {
-            throw new HumanReadableError('There was a problem while registering - ' + response['data']['errorMessage']);
+      .then(function(response : RegistrationResponse) {
+        if (response.data.success !== true) {
+          if (response.data.errorMessage) {
+            throw new HumanReadableError('There was a problem while registering - ' + response.data.errorMessage);
           } else {
             throw new HumanReadableError('There was a problem while registering :(');
           }

@@ -87,7 +87,7 @@ export default class GuestbookReader extends Vue {
       this.pageEntries = [];
 
       const srcPageEntries = response.data.pageEntries as Array<PageEntry>;
-      srcPageEntries.forEach((srcEntry) => {
+      srcPageEntries.forEach(function (this: GuestbookReader, srcEntry) {
         // Formatted agent data
         let parsedAgent = {};
         try {
@@ -100,7 +100,7 @@ export default class GuestbookReader extends Vue {
         // Formatted date
         let formattedCreatedAt = '';
         try {
-          const dateLV = (new Date(srcEntry.createdAt)).toLocaleString('lv-LV');
+          const dateLV = (new Date(srcEntry.createdAt || 0)).toLocaleString('lv-LV');
           formattedCreatedAt = `${dateLV} LV`;
         } catch (error) {
           /* eslint-disable no-console */
@@ -116,7 +116,7 @@ export default class GuestbookReader extends Vue {
         };
 
         // Exclamation means "I know 'this.pageEntries' won't be null or undefined"
-        this.pageEntries.push(entry);
+        this.pageEntries!.push(entry);
       });
     }).catch((e) => {
       if (e.response.status === 401) {

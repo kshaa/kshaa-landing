@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { LoginResponse } from '../../types/index.js';
 
 @Component({
   props: {
@@ -15,11 +16,11 @@ import { Component, Vue } from 'vue-property-decorator';
   }
 })
 export default class LoginForm extends Vue {
-  username: string;
-  password: string;
-  checkAuthentication: () => Promise<void>;
+  username!: string;
+  password!: string;
+  checkAuthentication!: () => Promise<void>;
   rules = {
-    isRequired: (v) => !!v || 'Value is required',
+    isRequired: (v: string) => !!v || 'Value is required',
   };
   data() {
     return {
@@ -27,12 +28,12 @@ export default class LoginForm extends Vue {
       password: '',
     }
   };
-  login = function() {
+  login = function(this: LoginForm) {
     return this.axios.post('/api/auth/local/login', {
       username: this.username,
       password: this.password
     })
-      .then((result) => {
+      .then(function (this: LoginForm, result : LoginResponse) {
         if (!result.data.success) {
           if (result.data.errorMessage) {
             alert(result.data.errorMessage);
@@ -44,7 +45,7 @@ export default class LoginForm extends Vue {
           this.checkAuthentication();
         }
       })
-      .catch((e) => {
+      .catch((e : Error) => {
         alert("There was a problem logging in");
       })
   }
