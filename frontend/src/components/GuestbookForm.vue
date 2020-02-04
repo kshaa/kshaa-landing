@@ -1,12 +1,13 @@
 <template>
   <v-content>
-    <v-container class="guestbook-write fill-height align-stretch justify-center text-center flex-column px-1" fluid>
+    <v-container :class="guestbookContainerClasses" fluid>
       <h2 class="headline font-weight-bold pb-4">Guestbook</h2>
       <p class="font-italic">Leave a message in the guestbook</p>
       <p class="font-italic">The guestbook is visible only to me (Veinbahs)</p>
-      <v-form class="guestbook-form" @submit.prevent="formSubmit">
+      <v-form class="guestbook-form" @submit.prevent="guestbookSubmit">
         <v-card class="message-card d-flex flex-column">
-          <v-textarea class="message mx-4 mt-2" name="message" v-model="message" placeholder="Message">
+          <v-textarea class="message mx-4 mt-2" name="message"
+            v-model="message" placeholder="Message">
           </v-textarea>
           <v-btn class="mx-4 mb-6 align-self-end" type="submit">Send</v-btn>
         </v-card>
@@ -24,15 +25,19 @@ import { Component, Vue } from 'vue-property-decorator';
   },
 })
 export default class GuestbookForm extends Vue {
-  message?: string|null
+  message!: string | null
 
-  data() {
+  guestbookContainerClasses =
+        'guestbook-write fill-height align-stretch '
+        + 'justify-center text-center flex-column px-1';
+
+  static data() {
     return {
       message: null,
     };
   }
 
-  formSubmit = function(this: GuestbookForm, e: any) {
+  guestbookSubmit = function guestbookSubmit(this: GuestbookForm, e: any) {
     /* eslint-disable no-alert */
     e.preventDefault();
 
@@ -48,12 +53,10 @@ export default class GuestbookForm extends Vue {
       .then((response) => {
         if (!response.data.success) {
           alert('There was a problem sending the message');
+        } else if (response.data.infoMessage) {
+          alert(response.data.infoMessage);
         } else {
-          if (response.data.infoMessage) {
-            alert(response.data.infoMessage)
-          } else {
-            alert('Message sent succesfully');
-          }
+          alert('Message sent succesfully');
         }
         // Clear form
         this.message = null;

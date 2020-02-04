@@ -56,7 +56,13 @@
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
-    }
+    },
+    "overrides": [{
+      "files": [ "*" ],
+      "rules": {
+        "no-alert": "off"
+      }
+    }]
   },
   "postcss": {
     "plugins": {

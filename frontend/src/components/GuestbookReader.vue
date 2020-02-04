@@ -64,7 +64,7 @@ export default class GuestbookReader extends Vue {
 
   error?: string | null
 
-  data() {
+  static data() {
     return {
       loading: false,
       error: null,
@@ -87,7 +87,7 @@ export default class GuestbookReader extends Vue {
       this.pageEntries = [];
 
       const srcPageEntries = response.data.pageEntries as Array<PageEntry>;
-      srcPageEntries.forEach(function (this: GuestbookReader, srcEntry) {
+      srcPageEntries.forEach(function formatPageEntry(this: GuestbookReader, srcEntry) {
         // Formatted agent data
         let parsedAgent = {};
         try {

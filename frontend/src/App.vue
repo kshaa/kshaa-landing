@@ -4,13 +4,24 @@
       <v-container class="d-flex justify-center nav">
         <router-link class="my-2 mx-5" to="/"><FontAwesomeIcon icon="home" /></router-link>
 
-        <router-link v-if="!isAdmin" class="my-2 mx-5" to="/guestbook/write"><FontAwesomeIcon icon="paper-plane" /></router-link>
-        <router-link v-if="isAdmin" class="my-2 mx-5" to="/guestbook/read"><FontAwesomeIcon icon="paper-plane" /></router-link>
+        <router-link v-if="!isAdmin" class="my-2 mx-5" to="/guestbook/write">
+          <FontAwesomeIcon icon="paper-plane" />
+        </router-link>
+        <router-link v-if="isAdmin" class="my-2 mx-5" to="/guestbook/read">
+          <FontAwesomeIcon icon="paper-plane" />
+        </router-link>
 
-        <router-link v-if="!isAuthenticated" class="my-2 mx-5" to="/auth"><FontAwesomeIcon icon="key" /></router-link>
-        <a v-if="isAuthenticated" class="my-2 mx-5" href="/api/auth/logout"><FontAwesomeIcon icon="sign-out-alt" /></a>
+        <router-link v-if="!isAuthenticated" class="my-2 mx-5" to="/auth">
+          <FontAwesomeIcon icon="key" />
+        </router-link>
+        <a v-if="isAuthenticated" class="my-2 mx-5" href="/api/auth/logout">
+          <FontAwesomeIcon icon="sign-out-alt" />
+        </a>
       </v-container>
-      <router-view class="app-content" v-bind:isAuthenticated="isAuthenticated" v-bind:checkAuthentication="checkAuthentication" v-bind:isAdmin="isAdmin" />
+      <router-view class="app-content"
+        v-bind:isAuthenticated="isAuthenticated"
+        v-bind:checkAuthentication="checkAuthentication"
+        v-bind:isAdmin="isAdmin" />
       <v-container class="elegant-emptiness">
       </v-container>
     </v-container>
@@ -28,7 +39,9 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Home extends Vue {
   isAdmin?: boolean | null
+
   isAuthenticated?: false | null
+
   error?: string | null
 
   data() {

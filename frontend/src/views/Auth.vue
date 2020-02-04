@@ -18,10 +18,12 @@
             Social
           </v-tab>
           <v-tab-item key="login">
-            <LoginForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></LoginForm>
+            <LoginForm v-bind:checkAuthentication="checkAuthentication" class="pt-4">
+            </LoginForm>
           </v-tab-item>
           <v-tab-item key="register">
-            <RegisterForm v-bind:checkAuthentication="checkAuthentication" class="pt-4"></RegisterForm>
+            <RegisterForm v-bind:checkAuthentication="checkAuthentication" class="pt-4">
+            </RegisterForm>
           </v-tab-item>
           <v-tab-item key="social">
             <div class="d-flex justify-center pt-6">
@@ -48,7 +50,7 @@ import RegisterForm from '@/components/Auth/RegisterForm.vue';
     RegisterForm,
   },
   props: {
-    checkAuthentication : Function,
+    checkAuthentication: Function,
   },
   metaInfo: {
     title: 'Login',
