@@ -30,7 +30,7 @@ let
     # cd ../frontend
     # docker build -t docker.io/blokflautijs/landing-frontend:v1.0.0 -f Dockerfile.prod .
     # docker push docker.io/blokflautijs/landing-frontend:v1.0.0
-    frontendImageName = "docker.io/blokflautijs/landing-frontend:v1.0.1";
+    frontendImageName = "docker.io/blokflautijs/landing-frontend:v1.0.2";
   });
   dockerComposeFile = pkgs.writeText "landing.docker-compose.yml" (builtins.toJSON dockerComposeSet);
 
