@@ -5,8 +5,6 @@
     # Build & environment configurations
     backendImageName,
     frontendImageName,
-    # @to-do, implement VUE_COMPILE=true after fixing typescript bugs
-    # VUE_COMPILE ? false,
 
     # Generic application configuration 
     ENVIRONMENT_NAME ? "production",
@@ -62,7 +60,6 @@ in
       volumes = [
         "${NGINX_COMPILED_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
         "vue-share:/var/www/public"
-        # "${NGINX_WEBPACK_VUE_CONFIG_PATH}:/etc/nginx/nginx.conf"
       ];
       depends_on = [ "frontend" ];
       ports = [
@@ -76,11 +73,6 @@ in
     };
     frontend = {
       image = frontendImageName;
-      # build = {
-      #   context = VUE_APP_SOURCE_PATH;
-      #   dockerfile = "Dockerfile.prod";
-      #   # dockerfile = "Dockerfile.devprod";
-      # };
       environment = {
         NODE_ENV = ENVIRONMENT_NAME;
         PORT = "8080";
@@ -92,12 +84,6 @@ in
     };
     backend = {
       image = backendImageName;
-      # build = {
-      #   context = BACKEND_SOURCE_PATH;
-      #   dockerfile = "Dockerfile.prod";
-      #   # dockerfile = "Dockerfile.devprod";
-      # };
-      # command = "npm run serve";
       environment = {
         inherit APPLICATION_KEY;
         inherit EXTERNAL_URL;
