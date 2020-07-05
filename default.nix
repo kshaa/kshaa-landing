@@ -43,7 +43,8 @@ in
     virtualHostName = mkOption { type = types.nullOr types.str; default = null; };
     virtualHost = mkOption { type = types.attrs; default = {}; };
     acmeSSLEnable = mkOption { type = types.bool; default = false; };
-    port = mkOption { type = types.int; default = 80; };
+    httpPort = mkOption { type = types.int; default = 80; };
+    sslPort = mkOption { type = types.int; default = 443; };
     
     ## Application network configuration
     externalUrl = mkOption { type = types.string; default = "http://127.0.0.1:80"; };
@@ -112,8 +113,11 @@ in
       recommendedProxySettings = true;
       virtualHosts."${cfg.virtualHostName}" = cfg.virtualHost // {
         listen = [
-          { addr = "0.0.0.0"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
-          { addr = "[::]"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
+          { addr = "0.0.0.0"; port = cfg.httpPort; ssl = false; }
+          { addr = "[::]"; port = cfg.httpPort; ssl = false; }
+        ] ++ optionals cfg.acmeSSLEnable [
+          { addr = "0.0.0.0"; port = cfg.sslPort; ssl = true; }
+          { addr = "[::]"; port = cfg.sslPort; ssl = true; }
         ];
         enableACME = cfg.acmeSSLEnable;
         forceSSL = cfg.acmeSSLEnable;
