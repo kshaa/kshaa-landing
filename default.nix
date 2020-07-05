@@ -112,8 +112,8 @@ in
       recommendedProxySettings = true;
       virtualHosts."${cfg.virtualHostName}" = cfg.virtualHost // {
         listen = [
-          { addr = "127.0.0.1"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
-          { addr = "[::1]"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
+          { addr = "0.0.0.0"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
+          { addr = "[::]"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
         ];
         enableACME = cfg.acmeSSLEnable;
         forceSSL = cfg.acmeSSLEnable;
@@ -125,8 +125,8 @@ in
       # virtualHosts."${cfg.virtualHostName}" = cfg.virtualHost // {
       #   # Entrypoint
       #   listen = [
-      #     { addr = "127.0.0.1"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
-      #     { addr = "[::1]"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
+      #     { addr = "0.0.0.0"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
+      #     { addr = "[::]"; port = cfg.port; ssl = cfg.acmeSSLEnable; }
       #   ];
       #   enableACME = cfg.acmeSSLEnable;
       #   forceSSL = cfg.acmeSSLEnable;
