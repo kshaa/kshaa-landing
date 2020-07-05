@@ -1,10 +1,8 @@
 # Nix build
-/result
+result
 
 # Runtime data
-/data
-firebase.webapp.json
-firebase.serviceaccount.json
+data
 
 # Secrets
 .env

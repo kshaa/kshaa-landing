@@ -1,54 +1,52 @@
 {
-    system ? builtins.currentSystem,
-    pkgs ? import <nixpkgs> { inherit system; },
+  pkgs,
 
-    # Build & environment configurations
-    backendImageName,
-    frontendImageName,
+  # Build & environment configurations
+  backendImageName,
+  frontendImageName,
 
-    # Generic application configuration 
-    ENVIRONMENT_NAME ? "production",
-    APPLICATION_KEY ? null,
+  # Generic application configuration 
+  ENVIRONMENT_NAME ? "production",
+  APPLICATION_KEY ? null,
 
-    ## Github
-    ADMIN_GITHUB_USER ? null,
-    GITHUB_CLIENT_ID ? null,
-    GITHUB_CLIENT_SECRET ? null,
+  ## Github
+  ADMIN_GITHUB_USER ? null,
+  GITHUB_CLIENT_ID ? null,
+  GITHUB_CLIENT_SECRET ? null,
 
-    ## Email notifications
-    EMAIL_NOTIFICATIONS ? null,
-    SERVICE_EMAIL ? null,
-    SERVICE_EMAIL_PASSWORD ? null,
-    ADMIN_EMAIL ? null,
+  ## Email notifications
+  EMAIL_NOTIFICATIONS ? null,
+  SERVICE_EMAIL ? null,
+  SERVICE_EMAIL_PASSWORD ? null,
+  ADMIN_EMAIL ? null,
 
-    ## Postgres database
-    POSTGRES_USER ? "landing",
-    POSTGRES_PASSWORD ? "landing",
-    POSTGRES_DATABASE ? "landing",
+  ## Postgres database
+  POSTGRES_USER ? "landing",
+  POSTGRES_PASSWORD ? "landing",
+  POSTGRES_DATABASE ? "landing",
 
-    # Network
-    SERVICE_PORT ? 8080,
-    POSTGRES_EXPOSED_PORT ? null,
-    EXTERNAL_URL ? "http://localhost:${toString SERVICE_PORT}",
-    NGINX_DEBUG_MODE ? false,
+  # Network
+  SERVICE_PORT ? 8080,
+  POSTGRES_EXPOSED_PORT ? 5432,
+  EXTERNAL_URL ? "http://localhost:${toString SERVICE_PORT}",
+  NGINX_DEBUG_MODE ? false,
 
-    # Filesystem
-    PROJECT_SOURCE_PATH ? ./..,
-    DATA_PATH ? PROJECT_SOURCE_PATH + /data, # For database storage
+  # Filesystem
+  PROJECT_SOURCE_PATH ? ./..,
+  DATA_PATH ? PROJECT_SOURCE_PATH + /data, # For database storage
 }:
 let
-    inherit (pkgs.lib) optionals optionalString optionalAttrs;
+  inherit (pkgs.lib) optionals optionalString optionalAttrs;
 
-    # Project source data subpaths
-    BACKEND_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/backend";
-    VUE_APP_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/frontend";
-    NGINX_COMPILED_VUE_CONFIG_PATH = (toString PROJECT_SOURCE_PATH) + "/ops/nginx.compiled.vue.conf";
-    NGINX_WEBPACK_VUE_CONFIG_PATH = (toString PROJECT_SOURCE_PATH) + "/ops/nginx.webpack.vue.conf";
+  # Project source data subpaths
+  BACKEND_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/backend";
+  VUE_APP_SOURCE_PATH = (toString PROJECT_SOURCE_PATH) + "/frontend";
+  NGINX_COMPILED_VUE_CONFIG_PATH = (toString PROJECT_SOURCE_PATH) + "/nginx.conf";
 
-    # Persistent data subpaths
-    BACKEND_DATA_PATH = (toString DATA_PATH) + "/be_data";
-    VUE_APP_DATA_PATH = (toString DATA_PATH) + "/fe_data";
-    POSTGRES_DATA_PATH = (toString DATA_PATH) + "/db_data";
+  # Persistent data subpaths
+  BACKEND_DATA_PATH = (toString DATA_PATH) + "/be_data";
+  VUE_APP_DATA_PATH = (toString DATA_PATH) + "/fe_data";
+  POSTGRES_DATA_PATH = (toString DATA_PATH) + "/db_data";
 in
 {
   version = "3";
@@ -94,7 +92,7 @@ in
         POSTGRES_HOST = "postgres";
         inherit POSTGRES_PASSWORD;
         inherit POSTGRES_USER;
-        inherit EMAIL_NOTIFICATIONS;
+        EMAIL_NOTIFICATIONS = if EMAIL_NOTIFICATIONS then "true" else "false";
         inherit SERVICE_EMAIL;
         inherit SERVICE_EMAIL_PASSWORD;
         inherit ADMIN_EMAIL;
