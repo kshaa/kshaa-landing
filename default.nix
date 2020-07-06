@@ -36,7 +36,7 @@ in
     enable = mkEnableOption "VueJS Landing page";
     user = mkOption { type = types.string; default = "kshaa-landing"; };
     group = mkOption { type = types.string; default = "users"; };
-    stateDir = mkOption { type = types.str; default = "/run/kshaa-landing"; };
+    stateDir = mkOption { type = types.str; default = "/var/kshaa-landing"; };
     
     # Networking
     ## Nginx network configuration
