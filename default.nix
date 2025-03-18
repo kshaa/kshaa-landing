@@ -88,10 +88,10 @@ in
         COMPOSE_PROJECT_NAME = "kshaa-landing";
       };
       script = ''
-        ${pkgs.docker_compose}/bin/docker-compose -f '${dockerCompositionJSON}' build
-        ${pkgs.docker_compose}/bin/docker-compose -f '${dockerCompositionJSON}' up
+        ${pkgs.docker-compose}/bin/docker-compose -f '${dockerCompositionJSON}' build
+        ${pkgs.docker-compose}/bin/docker-compose -f '${dockerCompositionJSON}' up
       '';
-      preStop  = "${pkgs.docker_compose}/bin/docker-compose -f '${dockerCompositionJSON}' down";
+      preStop  = "${pkgs.docker-compose}/bin/docker-compose -f '${dockerCompositionJSON}' down";
       serviceConfig = {
         Restart   = "always";
         User      = cfg.user;
